@@ -1,21 +1,31 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { AsyncStorage, StyleSheet, View, Alert } from 'react-native';
 import { Container, Header, Content, Form, Item, Input, Label, Button, Text, Grid, Col } from 'native-base';
-import * as firebase from 'firebase';
-import { connect } from 'react-redux';
 import { getInfo, saveInfo, updateInfo } from './actions';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  button: {
+    alignSelf: 'auto'
+  },
+  buttonText: {
+    textAlign: 'center',
+    width: '100%'
+  }
+});
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-    }
+    this.state = { key: '' }
   }
 
   componentDidMount() {
     AsyncStorage.getItem('key', (err, result)=>{
       if (result) {
-        console.log('found key', result);
         this.setState({ key: result });
         this.props.getInfo(result);
       } 
@@ -39,32 +49,6 @@ class App extends React.Component {
     }
   }
 
-    // try {
-    //   // dispatch getKey
-    //   AsyncStorage.getItem('key', (err, result)=>{
-    //     if (result) {
-    //       this.setState({ storageKey: result })
-
-    //       firebase.database().ref(result).once('value').then((info)=>{
-    //         if (info) {
-    //           console.log('Populating form...', info.val());
-    //           let data = info.val();
-    //           this.setState({
-    //             firstName: data.firstName,
-    //             lastName: data.lastName,
-    //             company: data.company,
-    //             department: data.department,
-    //             position: data.position,
-    //             email: data.email
-    //           })
-    //         }
-    //       })
-    //     }
-    //   })
-    // } catch(error) {
-    //   console.error(error);
-    // }
-
   onSaveClick = ()=>{
     let userId = '1';
     let data = {
@@ -75,28 +59,11 @@ class App extends React.Component {
       position: this.state.position || null,
       email: this.state.email || null
     }
-    if (this.state.key) {
-      console.log('this is key', this.state.key);
+    if (this.state.key) 
       this.props.updateInfo(data, this.state.key);
-    } else {
+    else 
       this.props.saveInfo(data);
-    }
-
-    // if (this.state.storageKey) {
-    //   console.log('Updating...')
-    //   let update = {};
-    //   update[this.state.storageKey] = data;
-    //   firebase.database().ref().update(update);
-
-    // } else {
-    //   console.log('Creating new...');
-    //   let key = firebase.database().ref().child('users').push().key;
-
-    //   AsyncStorage.setItem('key', key);
-    //   let update = {};
-    //   update[key] = data;
-    //   firebase.database().ref().update(update);
-    // }
+    
   }
 
   render() {
@@ -167,7 +134,6 @@ class App extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('this is state', state);
   return {
     key: state.key,
     info: state.info
@@ -183,16 +149,3 @@ function mapDispatchToProps (dispatch) {
 }
 
 export default connect (mapStateToProps, mapDispatchToProps)(App);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  button: {
-    alignSelf: 'auto'
-  },
-  buttonText: {
-    textAlign: 'center',
-    width: '100%'
-  }
-});

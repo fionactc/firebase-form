@@ -4,9 +4,7 @@ import { Provider } from 'react-redux';
 import { AppRegistry } from 'react-native';
 import reducers from './reducers';
 import thunk from 'redux-thunk';
-import App from './App';
-
-// let createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+import App from './App.js';
 
 const store = createStore(reducers, applyMiddleware(thunk));
 
